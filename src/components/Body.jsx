@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FaPlay, FaPause } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { FaPlay, FaPause } from "react-icons/fa";
 import { RiResetLeftFill } from "react-icons/ri";
-
-
 
 export default function Body() {
   const [rounds, setRounds] = useState(3);
@@ -16,7 +14,9 @@ export default function Body() {
   const [timeLeft, setTimeLeft] = useState(minutes * 60 + seconds);
   const [isFinished, setIsFinished] = useState(false);
 
-  const totalDuration = isRest ? restMinutes * 60 + restSeconds : minutes * 60 + seconds;
+  const totalDuration = isRest
+    ? restMinutes * 60 + restSeconds
+    : minutes * 60 + seconds;
   const percentage = ((totalDuration - timeLeft) / totalDuration) * 100;
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Body() {
       }, 1000);
     } else if (timeLeft === 0) {
       if (currentRound < rounds) {
-        const audio = new Audio('/src/assets/bell.mp3');
+        const audio = new Audio("/public/audio/bell.mp3");
         audio.play();
 
         if (isRest) {
@@ -41,12 +41,22 @@ export default function Body() {
       } else {
         setIsFinished(true);
         setIsActive(false);
-        const audio = new Audio('/src/assets/bell.mp3');
+        const audio = new Audio("/public/audio/bell.mp3");
         audio.play();
       }
     }
     return () => clearInterval(timer);
-  }, [isActive, timeLeft, isRest, currentRound, rounds, minutes, seconds, restMinutes, restSeconds]);
+  }, [
+    isActive,
+    timeLeft,
+    isRest,
+    currentRound,
+    rounds,
+    minutes,
+    seconds,
+    restMinutes,
+    restSeconds,
+  ]);
 
   const toggleTimer = () => {
     if (isActive) {
@@ -55,7 +65,7 @@ export default function Body() {
       setIsFinished(false);
       setTimeLeft(minutes * 60 + seconds);
       setIsActive(true);
-      const audio = new Audio('/src/assets/bell.mp3');
+      const audio = new Audio("/public/audio/bell.mp3");
       audio.play();
     }
   };
@@ -68,15 +78,21 @@ export default function Body() {
     setIsFinished(false);
   };
 
-  const displayTime = `${Math.floor(timeLeft / 60)}:${('0' + (timeLeft % 60)).slice(-2)}`;
+  const displayTime = `${Math.floor(timeLeft / 60)}:${(
+    "0" +
+    (timeLeft % 60)
+  ).slice(-2)}`;
 
   return (
     <div className="stopwatch-container">
-     <div className="headerlogo">
-      <ul>
-      <li><img src="/public/images/logo.png" alt="" className='logo'/><img src="/public/images/logo2.png" alt="" className='logo2'/></li>
-      <li>Round Timer STCv1</li>
-      </ul>
+      <div className="headerlogo">
+        <ul>
+          <li>
+            <img src="/public/images/logo.png" alt="" className="logo" />
+            <img src="/public/images/logo2.png" alt="" className="logo2" />
+          </li>
+          <li>Round Timer STCv1</li>
+        </ul>
       </div>
       <div className="circle-wrapper">
         <svg className="progress-ring" width="200" height="200">
@@ -91,41 +107,70 @@ export default function Body() {
             style={{
               strokeDasharray: 2 * Math.PI * 90,
               strokeDashoffset: 2 * Math.PI * 90 * (1 - percentage / 100),
-              transition: 'stroke-dashoffset 1s linear'
+              transition: "stroke-dashoffset 1s linear",
             }}
           />
         </svg>
         <div className="time-display">
-          <h1>{isFinished ? 'Selesai' : isRest ? 'Istirahat' : `Ronde ${currentRound}`}</h1>
+          <h1>
+            {isFinished
+              ? "Selesai"
+              : isRest
+              ? "Istirahat"
+              : `Ronde ${currentRound}`}
+          </h1>
           <h2>{displayTime}</h2>
         </div>
       </div>
       <div className="buttons">
         <div onClick={toggleTimer} className="icon-toggle">
-          {isActive ? <FaPause className='icon'/> : <FaPlay className='icon'/>}
+          {isActive ? (
+            <FaPause className="icon" />
+          ) : (
+            <FaPlay className="icon" />
+          )}
         </div>
-        <RiResetLeftFill onClick={resetTimer} className="btn-reset"/>
+        <RiResetLeftFill onClick={resetTimer} className="btn-reset" />
       </div>
       <div className="inputs">
         <label>
           Ronde:
-          <input type="number" value={rounds} onChange={(e) => setRounds(Number(e.target.value))} min="1" />
+          <input
+            type="number"
+            value={rounds}
+            onChange={(e) => setRounds(Number(e.target.value))}
+            min="1"
+          />
         </label>
         <label>
           Durasi Ronde (menit:detik):
-          <input type="text" value={`${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`} onChange={(e) => {
-            const [m, s] = e.target.value.split(':');
-            setMinutes(Number(m));
-            setSeconds(Number(s));
-          }} pattern="^([01]?[0-9]|2[0-3]):([0-5][0-9])$" />
+          <input
+            type="text"
+            value={`${minutes < 10 ? "0" + minutes : minutes}:${
+              seconds < 10 ? "0" + seconds : seconds
+            }`}
+            onChange={(e) => {
+              const [m, s] = e.target.value.split(":");
+              setMinutes(Number(m));
+              setSeconds(Number(s));
+            }}
+            pattern="^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
+          />
         </label>
         <label>
           Durasi Istirahat (menit:detik):
-          <input type="text" value={`${restMinutes < 10 ? '0' + restMinutes : restMinutes}:${restSeconds < 10 ? '0' + restSeconds : restSeconds}`} onChange={(e) => {
-            const [m, s] = e.target.value.split(':');
-            setRestMinutes(Number(m));
-            setRestSeconds(Number(s));
-          }} pattern="^([01]?[0-9]|2[0-3]):([0-5][0-9])$" />
+          <input
+            type="text"
+            value={`${restMinutes < 10 ? "0" + restMinutes : restMinutes}:${
+              restSeconds < 10 ? "0" + restSeconds : restSeconds
+            }`}
+            onChange={(e) => {
+              const [m, s] = e.target.value.split(":");
+              setRestMinutes(Number(m));
+              setRestSeconds(Number(s));
+            }}
+            pattern="^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
+          />
         </label>
       </div>
       <br />
