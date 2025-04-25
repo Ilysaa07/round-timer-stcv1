@@ -27,7 +27,7 @@ export default function Body() {
       }, 1000);
     } else if (timeLeft === 0) {
       if (currentRound < rounds) {
-        const audio = new Audio("/public/audio/bell.mp3");
+        const audio = new Audio("/audio/bell.mp3");
         audio.play();
 
         if (isRest) {
@@ -41,7 +41,7 @@ export default function Body() {
       } else {
         setIsFinished(true);
         setIsActive(false);
-        const audio = new Audio("/public/audio/bell.mp3");
+        const audio = new Audio("/audio/bell.mp3");
         audio.play();
       }
     }
@@ -65,7 +65,7 @@ export default function Body() {
       setIsFinished(false);
       setTimeLeft(minutes * 60 + seconds);
       setIsActive(true);
-      const audio = new Audio("/public/audio/bell.mp3");
+      const audio = new Audio("/audio/bell.mp3");
       audio.play();
     }
   };
@@ -88,8 +88,8 @@ export default function Body() {
       <div className="headerlogo">
         <ul>
           <li>
-            <img src="/public/images/logo.png" alt="" className="logo" />
-            <img src="/public/images/logo2.png" alt="" className="logo2" />
+            <img src="/images/logo.png" alt="" className="logo" />
+            <img src="/images/logo2.png" alt="" className="logo2" />
           </li>
           <li>Round Timer STCv1</li>
         </ul>
