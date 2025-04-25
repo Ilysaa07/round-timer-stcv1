@@ -74,7 +74,7 @@ export default function Body() {
     <div className="stopwatch-container">
      <div className="headerlogo">
       <ul>
-      <li><img src="/src/assets/logo.png" alt="" className='logo'/><img src="/src/assets/logo2.png" alt="" className='logo2'/></li>
+      <li><img src="/public/images/logo.png" alt="" className='logo'/><img src="/public/images/logo2.png" alt="" className='logo2'/></li>
       <li>Round Timer STCv1</li>
       </ul>
       </div>
