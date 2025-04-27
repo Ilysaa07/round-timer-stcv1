@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { RiResetLeftFill } from "react-icons/ri";
-import Swal from 'sweetalert2'; // Ensure SweetAlert2 is installed
+import Swal from 'sweetalert2';
 import Header from "./Header";
 
 export default function Body() {
@@ -22,13 +22,22 @@ export default function Body() {
     ? ((totalDuration - timeLeft) / totalDuration) * 100
     : 0;
 
+  // Timer Logic
   useEffect(() => {
     let timer;
     if (isActive && timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        setTimeLeft((prev) => {
+          if (prev === 11) {
+            const countdownAudio = new Audio("/audio/bell2.mp3");
+            countdownAudio.play();
+          }
+          return prev - 1;
+        });
       }, 1000);
-    } else if (timeLeft === 0) {
+    }
+
+    if (isActive && timeLeft === 0) {
       if (currentRound < rounds) {
         const audio = new Audio("/audio/bell.mp3");
         audio.play();
@@ -48,19 +57,24 @@ export default function Body() {
         audio.play();
       }
     }
+
     return () => clearInterval(timer);
-  }, [
-    isActive,
-    timeLeft,
-    isRest,
-    currentRound,
-    rounds,
-    roundDuration,
-    restDuration,
-  ]);
+  }, [isActive, timeLeft, isRest, currentRound, rounds, roundDuration, restDuration]);
+
+  // Sync duration when changed (if not active)
+  useEffect(() => {
+    if (!isActive && !isRest) {
+      setTimeLeft(roundDuration.minutes * 60 + roundDuration.seconds);
+    } else if (!isActive && isRest) {
+      setTimeLeft(restDuration.minutes * 60 + restDuration.seconds);
+    }
+  }, [roundDuration, restDuration]);
 
   const toggleTimer = () => {
-    const initialDuration = roundDuration.minutes * 60 + roundDuration.seconds;
+    const initialDuration = isRest
+      ? restDuration.minutes * 60 + restDuration.seconds
+      : roundDuration.minutes * 60 + roundDuration.seconds;
+
     if (initialDuration <= 0) {
       Swal.fire({
         icon: "warning",
@@ -74,7 +88,9 @@ export default function Body() {
       setIsActive(false);
     } else {
       setIsFinished(false);
-      setTimeLeft(initialDuration);
+      if (timeLeft <= 0) {
+        setTimeLeft(initialDuration);
+      }
       setIsActive(true);
       const audio = new Audio("/audio/bell.mp3");
       audio.play();
@@ -129,6 +145,7 @@ export default function Body() {
           <h2>{displayTime}</h2>
         </div>
       </div>
+
       <div className="buttons">
         <div onClick={toggleTimer} className="icon-toggle">
           {isActive ? <FaPause className="icon" /> : <FaPlay className="icon" />}

@@ -38,6 +38,9 @@ importers:
       sweetalert2:
         specifier: ^11.19.1
         version: 11.19.1
+      workbox-window:
+        specifier: ^7.3.0
+        version: 7.3.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.22.0
