@@ -14,6 +14,10 @@
   
 }
 
+body {
+  background-color: #1e1e1e; /* Dark background */
+}
+
 /* Header Section */
 .headerlogo ul {
   list-style: none;
