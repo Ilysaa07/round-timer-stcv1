@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       manifest: {
         name: 'Timer Rounde',
-        short_name: 'Timer',
-        description: 'Aplikasi Timer Ronde dan Istirahat',
+        short_name: 'Timer STC',
+        description: 'Aplikasi Timer Ronde',
         theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',
@@ -41,7 +41,7 @@ export default defineConfig({
             },
           },
         ],
-        navigateFallback: '/offline.html' // ✅ yang benar
+        navigateFallback: '/offline.html' 
       },
       
     }),
