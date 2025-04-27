@@ -1,160 +1,188 @@
-* {
-    background-color: rgb(27, 26, 31);
-    color: white;
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-  }
+/* General Container */
+.stopwatch-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background-color: #1e1e1e; /* Dark background */
+  color: #e0e0e0; /* Softer white text for better readability */
+  border-radius: 1rem;
   
-  /* Navbar */
-  .headerlogo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid #444;
-  }
+  
+}
 
-  ul {
-    list-style-type: none;
-    display: flex;
+/* Header Section */
+.headerlogo ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerlogo li {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #e0e0e0; /* Softer white */
+}
+
+.logo, .logo2 {
+  height: 50px;
+}
+
+/* Circular Progress Ring */
+.circle-wrapper {
+  position: relative;
+  margin: 2rem 0 ;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+  stroke: #ff5252; /* Light red stroke */
+  transition: stroke-dashoffset 0.8s linear;
+  transform-origin: center;
+  animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    stroke-width: 10;
+  }
+  to {
+    stroke-width: 14;
+  }
+}
+
+/* Time Display */
+.time-display {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.time-display h1 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  color: #e0e0e0;
+}
+
+.time-display h2 {
+  font-size: 3.2rem;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+/* Buttons Section */
+.buttons {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.icon-toggle, .btn-reset {
+  cursor: pointer;
+  font-size: 2.5rem;
+  color: #ff5252; /* Light red */
+  transition: all 0.3s ease;
+}
+
+.icon-toggle:hover, .btn-reset:hover {
+  color: #ff867f; /* Lighter red on hover */
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
+/* Input Fields Section */
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  margin-top: 4rem;
+  width: 100%;
+  max-width: 380px;
+  background-color: #282828; /* Darker background */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2), 0 0 0.25rem rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 1s ease-out; /* Fade-in effect for inputs */
+}
+
+.inputs label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  text-align: left;
+  color: #e0e0e0;
+}
+
+.inputs select,
+.inputs input[type="number"],
+.inputs input[type="text"] {
+  padding: 1rem;
+  border: 2px solid #444;
+  border-radius: 8px;
+  background-color: #333;
+  color: #e0e0e0;
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+}
+
+/* Focus effect on inputs */
+.inputs select:focus,
+.inputs input[type="number"]:focus,
+.inputs input[type="text"]:focus {
+  border-color: #ff5252; /* Red border on focus */
+  outline: none;
+  animation: focusEffect 0.3s ease-out; /* Focus animation */
+}
+
+@keyframes focusEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Input Hover Animation */
+.inputs input[type="number"]:hover,
+.inputs select:hover {
+  background-color: #444; /* Lighter dark background */
+  transform: scale(1.02);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .headerlogo ul {
+    flex-direction: column;
     gap: 1rem;
   }
 
-  li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
-  }
-
-  .logo {
-    width: 3rem;
-    height: auto;
-  }
-
-  .logo2 {
-    width: 4rem;
-    height: auto;
-  }
-
-
-  .stopwatch-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: sans-serif;
-  }
-  
-  .circle-wrapper {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 20px 0;
-  }
-  
-  .progress-ring__circle {
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
-  }
-  
-  .time-display {
-    position: absolute;
-    background-color: transparent;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
-  
-  .buttons {
-    margin: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .buttons button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    font-size: 1rem;
-    border-radius: 1rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  /* Tombol toggle (play/pause) */
-  .btn-toggle {
-    width: 10rem;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .btn-toggle:hover {
-    background-color: rgb(80, 230, 80);
-  }
-  
-  /* Tombol reset */
-  .btn-reset {
-    width: auto;
-    height: 2rem;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: red;
-    padding: 9px;
-  }
-  
-  .btn-reset:hover {
-    background-color: rgb(125, 9, 9);
-  }
-  
-  /* Tombol Play/pause */
-  .icon {
-    width: auto;
-    height: 2rem;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 9px;
-    background-color: gray;
-  }
-
-  .icon:hover {
-    background-color: rgb(80, 80, 80);
+  .time-display h2 {
+    font-size: 3.5rem;
   }
 
   .inputs {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    padding: 20px;
-    border-radius: 1rem;
-    background-color: rgb(37, 37, 41);
+    width: 90%;
   }
-  
-  .inputs label {
-    display: flex;
-    flex-direction: column;
-    font-size: 1rem;
-    background-color: transparent;
-  }
-  
-  .inputs input {
-    padding: 8px;
-    border-radius: 1rem;
-    border: none;
-    background-color: rgb(50, 50, 50);
-    color: white;
-  }
-  
+}
+
+/* Accessibility */
+.icon-toggle:focus, .btn-reset:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.8); /* Focus outline */
+}
+
+.inputs input:invalid {
+  border-color: #ff5252; /* Red border for invalid input */
+}

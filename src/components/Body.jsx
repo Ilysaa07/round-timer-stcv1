@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { RiResetLeftFill } from "react-icons/ri";
+import Swal from 'sweetalert2'; // Ensure SweetAlert2 is installed
+import Header from "./Header";
 
 export default function Body() {
   const [rounds, setRounds] = useState(3);
-  const [minutes, setMinutes] = useState(2);
-  const [seconds, setSeconds] = useState(0);
-  const [restMinutes, setRestMinutes] = useState(1);
-  const [restSeconds, setRestSeconds] = useState(0);
+  const [roundDuration, setRoundDuration] = useState({ minutes: 2, seconds: 0 });
+  const [restDuration, setRestDuration] = useState({ minutes: 1, seconds: 0 });
   const [isActive, setIsActive] = useState(false);
   const [isRest, setIsRest] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
-  const [timeLeft, setTimeLeft] = useState(minutes * 60 + seconds);
+  const [timeLeft, setTimeLeft] = useState(roundDuration.minutes * 60 + roundDuration.seconds);
   const [isFinished, setIsFinished] = useState(false);
 
   const totalDuration = isRest
-    ? restMinutes * 60 + restSeconds
-    : minutes * 60 + seconds;
-  const percentage = ((totalDuration - timeLeft) / totalDuration) * 100;
+    ? restDuration.minutes * 60 + restDuration.seconds
+    : roundDuration.minutes * 60 + roundDuration.seconds;
+
+  const percentage = totalDuration > 0
+    ? ((totalDuration - timeLeft) / totalDuration) * 100
+    : 0;
 
   useEffect(() => {
     let timer;
@@ -33,10 +36,10 @@ export default function Body() {
         if (isRest) {
           setCurrentRound((prev) => prev + 1);
           setIsRest(false);
-          setTimeLeft(minutes * 60 + seconds);
+          setTimeLeft(roundDuration.minutes * 60 + roundDuration.seconds);
         } else {
           setIsRest(true);
-          setTimeLeft(restMinutes * 60 + restSeconds);
+          setTimeLeft(restDuration.minutes * 60 + restDuration.seconds);
         }
       } else {
         setIsFinished(true);
@@ -52,18 +55,26 @@ export default function Body() {
     isRest,
     currentRound,
     rounds,
-    minutes,
-    seconds,
-    restMinutes,
-    restSeconds,
+    roundDuration,
+    restDuration,
   ]);
 
   const toggleTimer = () => {
+    const initialDuration = roundDuration.minutes * 60 + roundDuration.seconds;
+    if (initialDuration <= 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Durasi Tidak Valid",
+        text: "Durasi ronde harus lebih dari 0 detik.",
+      });
+      return;
+    }
+
     if (isActive) {
       setIsActive(false);
     } else {
       setIsFinished(false);
-      setTimeLeft(minutes * 60 + seconds);
+      setTimeLeft(initialDuration);
       setIsActive(true);
       const audio = new Audio("/audio/bell.mp3");
       audio.play();
@@ -72,28 +83,24 @@ export default function Body() {
 
   const resetTimer = () => {
     setIsActive(false);
-    setTimeLeft(minutes * 60 + seconds);
+    setTimeLeft(roundDuration.minutes * 60 + roundDuration.seconds);
     setCurrentRound(1);
     setIsRest(false);
     setIsFinished(false);
   };
 
-  const displayTime = `${Math.floor(timeLeft / 60)}:${(
-    "0" +
-    (timeLeft % 60)
-  ).slice(-2)}`;
+  const displayTime = `${Math.floor(timeLeft / 60)}:${("0" + (timeLeft % 60)).slice(-2)}`;
+
+  const generateOptions = (max) =>
+    Array.from({ length: max + 1 }, (_, i) => (
+      <option key={i} value={i}>
+        {i.toString().padStart(2, "0")}
+      </option>
+    ));
 
   return (
     <div className="stopwatch-container">
-      <div className="headerlogo">
-        <ul>
-          <li>
-            <img src="/images/logo.png" alt="" className="logo" />
-            <img src="/images/logo2.png" alt="" className="logo2" />
-          </li>
-          <li>Round Timer STCv1</li>
-        </ul>
-      </div>
+      <Header />
       <div className="circle-wrapper">
         <svg className="progress-ring" width="200" height="200">
           <circle
@@ -124,14 +131,11 @@ export default function Body() {
       </div>
       <div className="buttons">
         <div onClick={toggleTimer} className="icon-toggle">
-          {isActive ? (
-            <FaPause className="icon" />
-          ) : (
-            <FaPlay className="icon" />
-          )}
+          {isActive ? <FaPause className="icon" /> : <FaPlay className="icon" />}
         </div>
         <RiResetLeftFill onClick={resetTimer} className="btn-reset" />
       </div>
+
       <div className="inputs">
         <label>
           Ronde:
@@ -142,37 +146,66 @@ export default function Body() {
             min="1"
           />
         </label>
+
         <label>
-          Durasi Ronde (menit:detik):
-          <input
-            type="text"
-            value={`${minutes < 10 ? "0" + minutes : minutes}:${
-              seconds < 10 ? "0" + seconds : seconds
-            }`}
-            onChange={(e) => {
-              const [m, s] = e.target.value.split(":");
-              setMinutes(Number(m));
-              setSeconds(Number(s));
-            }}
-            pattern="^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
-          />
+          Durasi Ronde:
+          <div className="time-picker">
+            <select
+              value={roundDuration.minutes}
+              onChange={(e) =>
+                setRoundDuration((prev) => ({
+                  ...prev,
+                  minutes: Number(e.target.value),
+                }))
+              }
+            >
+              {generateOptions(59)}
+            </select>
+            :
+            <select
+              value={roundDuration.seconds}
+              onChange={(e) =>
+                setRoundDuration((prev) => ({
+                  ...prev,
+                  seconds: Number(e.target.value),
+                }))
+              }
+            >
+              {generateOptions(59)}
+            </select>
+          </div>
         </label>
+
         <label>
-          Durasi Istirahat (menit:detik):
-          <input
-            type="text"
-            value={`${restMinutes < 10 ? "0" + restMinutes : restMinutes}:${
-              restSeconds < 10 ? "0" + restSeconds : restSeconds
-            }`}
-            onChange={(e) => {
-              const [m, s] = e.target.value.split(":");
-              setRestMinutes(Number(m));
-              setRestSeconds(Number(s));
-            }}
-            pattern="^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
-          />
+          Durasi Istirahat:
+          <div className="time-picker">
+            <select
+              value={restDuration.minutes}
+              onChange={(e) =>
+                setRestDuration((prev) => ({
+                  ...prev,
+                  minutes: Number(e.target.value),
+                }))
+              }
+            >
+              {generateOptions(59)}
+            </select>
+            :
+            <select
+              value={restDuration.seconds}
+              onChange={(e) =>
+                setRestDuration((prev) => ({
+                  ...prev,
+                  seconds: Number(e.target.value),
+                }))
+              }
+            >
+              {generateOptions(59)}
+            </select>
+          </div>
         </label>
       </div>
+
       <br />
       <div>&copy; 2025 Ilyasa Meydiansyah</div>
     </div>
